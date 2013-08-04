@@ -10,27 +10,45 @@ import java.util.Iterator;
 
 import com.mindfine.youdaodict.fetcher.Fetcher;
 import com.mindfine.youdaodict.fetcher.YoudaoCollinsFetcher;
+import com.mindfine.youdaodict.pronouncer.YoudaoPronouncer;
 
 
 public class OfflineActor {
+	public static String baseDir = System.getProperty("user.dir");
+			
 	public static void main(String[] args) throws Exception {
+		
 		OfflineActor oa = new OfflineActor();
 		String [] words = oa.parseWords("words.txt");
 		
-		FileWriter fw = new FileWriter(System.getProperty("user.dir") + "collinsWords.txt", true);
+		FileWriter fw = new FileWriter(baseDir + "collinsWords.txt", true);
 		PrintWriter pw = new PrintWriter(fw);
 		
-		oa.saveWords(pw, words);
+		oa.saveWordsAndAudio(pw, words);
 		pw.close();
 	}
-	public void saveWords(PrintWriter pw, String[] words) {
+	/**
+	 * 下载词典信息和音频信息
+	 * @param pw 输出词典信息的位置
+	 * @param words 当前操作的单词
+	 */
+	public void saveWordsAndAudio(PrintWriter pw, String[] words) {
 		for(int i = 0; i < words.length; i++) {
 			String word = words[i];
 			YoudaoCollinsFetcher ycf = new YoudaoCollinsFetcher();
 			ycf.setStyleType(Fetcher.StyleType.plain);
 			String exp = ycf.jsoupFetcher(word);
 			printToFile(word, exp, pw);
+			saveAudio(word);
 		}
+	}
+	
+	/**
+	 * @param word
+	 */
+	public void saveAudio(String word) {
+		String saveTo = baseDir + "speech/";
+		new YoudaoPronouncer().download(word, saveTo);
 	}
 	/**
 	 * 字典格式：<br>
@@ -41,7 +59,7 @@ public class OfflineActor {
 	 * @param word 当前打印的单词
 	 */
 	public void printToFile(String word, String exp, PrintWriter pw) {
-		File collinsWords = new File(System.getProperty("user.dir") + "collinsWords.txt");
+		File collinsWords = new File(baseDir + "collinsWords.txt");
 		try {
 			if(!collinsWords.exists()) {
 					if(!collinsWords.createNewFile()) {
