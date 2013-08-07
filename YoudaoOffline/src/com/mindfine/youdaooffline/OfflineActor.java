@@ -7,8 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.Iterator;
 
 import com.mindfine.youdaodict.fetcher.Fetcher;
 import com.mindfine.youdaodict.fetcher.YoudaoCollinsFetcher;
@@ -75,14 +73,7 @@ public class OfflineActor {
 			fis.close();
 			String tmpString = new String(sb);
 			String words = new String(tmpString.getBytes("ISO8859-1"), "utf-8");
-			wds = words.split("[^a-zA-z]");
-
-			//去重
-			HashSet<String> noDupli = new HashSet<String>();
-			for(int i = 0; i < wds.length; i++) {
-				noDupli.add(wds[i]);
-			}
-			
+			wds = words.split("[^a-zA-z]");			
 			
 			//读取已经完成的单词
 			File finishedFile = new File(System.getProperty("user.dir") + "/words-finished.txt");
@@ -101,15 +92,14 @@ public class OfflineActor {
 			//已完成单词文件，以追加方式打开
 			PrintWriter finishedLogPw = new PrintWriter(new FileWriter(System.getProperty("user.dir") + "/words-finished.txt", true));
 			String tprWord = null;
-			Iterator<String> noDupIterator = noDupli.iterator();
 
 			//存储单词释义的文件
 			FileWriter fw = new FileWriter(baseDir + "collinsWords.txt", true);
 			PrintWriter expOutPw = new PrintWriter(fw);
 			
-			while(noDupIterator.hasNext()) {
-				tprWord = noDupIterator.next();
-if(debug == true) System.out.print("当前正在下载:" + tprWord + "...");
+			for(int i = 0; i < wds.length; i++) {
+				tprWord = wds[i];
+				if(debug == true) System.out.print("当前正在下载:" + tprWord + "...");
 				if(finishedWords != null && !finishedWords.equals("") && finishedWords.contains(tprWord)) {
 if(debug == true) System.out.println("已经存在");
 					continue;
@@ -139,8 +129,7 @@ if(debug == true) System.out.println("未找到释义，下一个");
 				expOutPw.flush();
 				finishedLogPw.flush();
 if(debug == true) System.out.println("done");
-			}
-			
+			}			
 			expOutPw.close();
 			finishedLogPw.close();
 		} else {
