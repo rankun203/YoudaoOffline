@@ -18,7 +18,8 @@ import com.mindfine.youdaodict.pronouncer.YoudaoPronouncer;
 public class OfflineActor {
 	public static boolean debug = true;
 	public static String baseDir = System.getProperty("user.dir");
-			
+	public static int failedCount = 0;
+	
 	public static void main(String[] args) throws Exception {
 		
 		OfflineActor oa = new OfflineActor();
@@ -51,7 +52,7 @@ public class OfflineActor {
 			}
 			pw.print(word + "``");
 			pw.println(exp);
-			pw.print(word + "```");
+			pw.print("```");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -120,7 +121,15 @@ if(debug == true) System.out.println("已经存在");
 					ycf.setStyleType(Fetcher.StyleType.plain);
 					String exp = ycf.jsoupFetcher(tprWord);
 					if(null == exp || exp.equals("")) {
+if(debug == true) System.out.println("未找到释义，下一个");
+						if(failedCount > 5) {
+							Thread.sleep(failedCount * 1000);
+						} else if (failedCount > 50) {
+							System.exit(0);
+						}
 						continue;
+					} else {
+						failedCount = 0;
 					}
 					printToFile(tprWord, exp, expOutPw);
 					saveAudio(tprWord);
