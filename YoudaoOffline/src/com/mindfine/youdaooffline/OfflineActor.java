@@ -15,7 +15,7 @@ import com.mindfine.youdaodict.pronouncer.YoudaoPronouncer;
 
 public class OfflineActor {
 	public static boolean debug = true;
-	public static String baseDir = System.getProperty("user.dir");
+	public static String baseDir = System.getProperty("user.dir") + "/";
 	public static int failedCount = 0;
 	
 	public static void main(String[] args) throws Exception {
