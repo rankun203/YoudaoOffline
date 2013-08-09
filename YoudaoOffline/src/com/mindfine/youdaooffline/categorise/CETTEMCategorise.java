@@ -19,13 +19,17 @@ public class CETTEMCategorise {
 		String [][] words = null;
 		
 		File wordsFile = new File(filePath);
+		//文件读取器
+		BufferedReader br = null;
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(wordsFile));
+			br = new BufferedReader(new FileReader(wordsFile));
 			StringBuffer sb = new StringBuffer();
 			String tpr = null;
 			while((tpr = br.readLine()) != null) {
-				sb.append(tpr);
+				sb.append(tpr + "\r\n");
 			}
+			br.close();
+
 			String wordsString = new String(sb);
 			String [] wordsUnit = wordsString.split("```");
 			int wordsSize = wordsUnit.length;
@@ -39,11 +43,21 @@ public class CETTEMCategorise {
 			for(int i = 0; i < wordsSize; i++) {
 				wordUnit = wordsUnit[i];
 				tpr2 = wordUnit.split("``");
-				words[i][0] = tpr2[0];
-				words[i][1] = tpr2[1];
+				if(tpr2.length > 1) {
+					if(tpr2[0] != null && !tpr2[0].equals("") && tpr2[1] != null && !tpr2[1].equals("")) {
+						String tpr20 = tpr2[0];
+						String tpr21 = tpr2[1];
+						words[i][0] = tpr20;
+						words[i][1] = tpr21;
+					}
+				}
 			}
 			
-			//TODO 如何存储单词数据！
+			int test = 15;
+			System.out.println(words[test][0] + "\r\n");
+			System.out.println(words[test][1]);
+
+			//TODO 如何存储单词数据！分词算法
 			
 			
 		} catch (FileNotFoundException e) {
@@ -51,6 +65,15 @@ public class CETTEMCategorise {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if(br != null) {
+				try {
+					br.close();
+					br = null;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 		
