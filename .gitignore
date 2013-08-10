@@ -1,3 +1,5 @@
 speech/
 collinsWords.txt
 *.mp3
+*.idx
+*.exp
