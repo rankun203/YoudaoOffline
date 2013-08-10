@@ -52,14 +52,8 @@ public class CETTEMCategorise {
 					}
 				}
 			}
-			
-			int test = 15;
-			System.out.println(words[test][0] + "\r\n");
-			System.out.println(words[test][1]);
-
-			//TODO 如何存储单词数据！分词算法
-			
-			
+//			生成词典文件
+			generateDicFile(words);
 		} catch (FileNotFoundException e) {
 			System.err.println("错误：无法找到文件！");
 			e.printStackTrace();
@@ -78,6 +72,41 @@ public class CETTEMCategorise {
 		
 		
 		return words;
+	}
+
+	/**
+	 * @param words 要保存的单词数据：<br>
+	 * 参数内容格式：<br>
+	 * word  explain<br>
+	 * word2 explain2<br>
+	 * ...<br>
+	 */
+	private void generateDicFile(String[][] words) {
+		DicOperator dor = new DicOperator();
+		for(int i = 0; i < words.length; i++) {
+			String explain = words[i][1];
+			String typeStr = "";
+			//如果解释不为空则进行判断类型和保存单词
+			if(explain != null) {
+				if(explain.contains("CET4")){
+					typeStr += "CET4";
+					if(explain.contains("CET6")){
+						typeStr += ",CET6";
+						if(explain.contains("TEM8")){
+							typeStr += ",TEM8";
+						}
+					}
+				} else if (explain.contains("CET6")) {
+					typeStr += "CET6";
+					if(explain.contains("TEM8")){
+						typeStr += ",TEM8";
+					}
+				} else if (explain.contains("TEM8")) {
+					typeStr += "TEM8";
+				}
+				dor.saveWord(words[i][0], words[i][1], typeStr);
+			}
+		}
 	}
 
 }
