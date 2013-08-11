@@ -1,5 +1,7 @@
 speech/
 collinsWords.txt
+youdaocollins.txt
 *.mp3
 *.idx
 *.exp
+*.7z
