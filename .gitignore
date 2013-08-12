@@ -1,3 +1,10 @@
 speech/
 collinsWords.txt
+<<<<<<< HEAD
+=======
+youdaocollins.txt
+>>>>>>> categoriseDic
 *.mp3
+*.idx
+*.exp
+*.7z
