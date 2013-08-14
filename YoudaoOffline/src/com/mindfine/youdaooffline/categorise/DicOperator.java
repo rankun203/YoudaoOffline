@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 /**
  * 词库有两个文件：youdaocollins.idx、youdaocollins.exp<br>
  * 先生成.exp词库及解释文件，然后再根据这份文件生成.idx索引文件<br>
- * 词库文件内容描述了单词的位置：<br>
+ * 词库文件内容描述了单词的位置，从07bf3971bc1377f6da7215c1430f4ecab2fa0cdc开始采用字节描述：<br>
  * 单词名称:单词类型 :解释位置:解释长度<br>
  * name:CET4,TEM4:1300:30<br>
  * what:TEM8:1330:54<br>
