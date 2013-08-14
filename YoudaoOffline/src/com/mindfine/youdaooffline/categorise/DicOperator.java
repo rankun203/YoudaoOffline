@@ -20,6 +20,9 @@ public class DicOperator {
 
 	private static PrintWriter idxout = null;
 	private static PrintWriter expout = null;
+	/**
+	 * 文件流位置指针
+	 */
 	private static int ecur = 1;
 
 	static {
@@ -47,6 +50,23 @@ public class DicOperator {
 		idxout.println();
 		expout.println(explain);
 		ecur += explainLines;
+		idxout.flush();
+		expout.flush();
+	}
+	/**
+	 * @param word 要存储的单词
+	 * @param explain 解释
+	 * @param type 类型
+	 */
+	public void saveWordForByte(String word, String explain, String type) {
+		explain = explain.trim();
+		//本条解释的长度
+		int thisExplainByteSize = explain.getBytes().length;
+		
+		idxout.print(word + ":" + type + ":" + ecur + ":" + thisExplainByteSize);
+		idxout.println();
+		expout.print(explain);
+		ecur += thisExplainByteSize;
 		idxout.flush();
 		expout.flush();
 	}

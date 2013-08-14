@@ -12,7 +12,9 @@ public class CETTEMCategorise {
 		String wordsLoc = System.getProperty("user.dir") + "/collinsWords.txt";
 
 		CETTEMCategorise cts = new CETTEMCategorise();
-		cts.readFile(wordsLoc);
+		String [][] words = cts.readFile(wordsLoc);
+//		生成词典文件
+		cts.generateDicFile(words);
 	}
 	
 	public String[][] readFile(String filePath){
@@ -52,8 +54,6 @@ public class CETTEMCategorise {
 					}
 				}
 			}
-//			生成词典文件
-			generateDicFile(words);
 		} catch (FileNotFoundException e) {
 			System.err.println("错误：无法找到文件！");
 			e.printStackTrace();
@@ -104,7 +104,7 @@ public class CETTEMCategorise {
 				} else if (explain.contains("TEM8")) {
 					typeStr += "TEM8";
 				}
-				dor.saveWord(words[i][0], words[i][1], typeStr);
+				dor.saveWordForByte(words[i][0], words[i][1], typeStr);
 			}
 		}
 	}

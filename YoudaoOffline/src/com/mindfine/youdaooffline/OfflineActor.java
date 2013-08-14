@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.LinkedHashSet;
 
 import com.mindfine.youdaodict.fetcher.Fetcher;
 import com.mindfine.youdaodict.fetcher.YoudaoCollinsFetcher;
@@ -28,7 +30,7 @@ public class OfflineActor {
 	 * @param word
 	 */
 	public void saveAudio(String word) {
-		String saveTo = baseDir + "speech/";
+		String saveTo = baseDir + "/speech/";
 		new YoudaoPronouncer().download(word, saveTo);
 	}
 	/**
@@ -73,7 +75,13 @@ public class OfflineActor {
 			fis.close();
 			String tmpString = new String(sb);
 			String words = new String(tmpString.getBytes("ISO8859-1"), "utf-8");
-			wds = words.split("[^a-zA-z]");			
+			wds = words.split("[^a-zA-z]");
+			//单词数组去重
+			LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+			for(String s : wds) {
+				lhs.add(s);
+			}
+			lhs.toArray(wds);
 			
 			//读取已经完成的单词
 			File finishedFile = new File(System.getProperty("user.dir") + "/words-finished.txt");
@@ -83,7 +91,7 @@ public class OfflineActor {
 				StringBuilder finishedSB = new StringBuilder();
 				String bufLine = null;
 				while((bufLine = br.readLine()) != null) {
-					finishedSB.append(bufLine);
+					finishedSB.append(bufLine + "\r\n");
 				}
 				finishedWords = new String(finishedSB);
 				br.close();
@@ -94,19 +102,19 @@ public class OfflineActor {
 			String tprWord = null;
 
 			//存储单词释义的文件
-			FileWriter fw = new FileWriter(baseDir + "collinsWords.txt", true);
+			FileWriter fw = new FileWriter(baseDir + "/collinsWords.txt", true);
 			PrintWriter expOutPw = new PrintWriter(fw);
 			
 			for(int i = 0; i < wds.length; i++) {
 				tprWord = wds[i];
 				if(debug == true) System.out.print("当前正在下载:" + tprWord + "...");
-				if(finishedWords != null && !finishedWords.equals("") && finishedWords.contains(tprWord)) {
+				if(findFinished(finishedWords, tprWord)) {
 if(debug == true) System.out.println("已经存在");
 					continue;
 				}
 				//先获取释义及存储释义音频
 				//然后存储进度
-				if(!tprWord.equals("")) {
+				if(tprWord != null && !tprWord.equals("")) {
 					YoudaoCollinsFetcher ycf = new YoudaoCollinsFetcher();
 					ycf.setStyleType(Fetcher.StyleType.plain);
 					String exp = ycf.jsoupFetcher(tprWord);
@@ -136,5 +144,11 @@ if(debug == true) System.out.println("done");
 			System.out.println("File " + filePath + " not exists.");
 		}
 		return wds;
+	}
+	private boolean findFinished(String finishedWords, String tprWord) {
+		if(finishedWords != null && !finishedWords.equals("") && finishedWords.contains("\r\n" + tprWord + "\r\n")) {
+			return true;
+		}
+		return false;
 	}
 }
